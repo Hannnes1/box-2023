@@ -1,0 +1,6 @@
+{
+    "port": "/dev/ttyACM0",
+    "configuration": "mode=on",
+    "board": "arduino:megaavr:nona4809",
+    "programmer": "medbg"
+}
