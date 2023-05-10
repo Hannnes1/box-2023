@@ -9,6 +9,8 @@
 #define a4f 415
 #define b4f 466
 #define b4 493
+#define g4 392
+#define b5f 932
 #define c5 523
 #define c5s 554
 #define e5f 622
@@ -21,10 +23,18 @@
 #define g5f 740
 #define d5s 622
 #define e5 659
+#define e6 1319
+#define e6f 1397
 #define c6 1047
+#define g6 1568
+#define c7 2093
 #define rest -1
 
 const float beatSeparation = 0.3;
+
+int xpMelody[] = {e5f, e4f, b4f, a4f, e4f, e5f, b4f};
+
+int xpRhythm[] = {2, 1, 3, 2, 2, 2, 6};
 
 int rickRollMelody[] =
     {b4f, b4f, a4f, a4f,
@@ -36,7 +46,7 @@ int rickRollMelody[] =
      c5s, c5s, c5s, c5s,
      c5s, e5f, c5, b4f, a4f, rest, a4f, e5f, c5s, rest};
 
-int rickRollRhythmn[] =
+int rickRollRhythm[] =
     {1, 1, 1, 1,
      3, 3, 6, 1, 1, 1, 1, 3, 3, 3, 1, 2,
      1, 1, 1, 1,
@@ -49,11 +59,11 @@ int rickRollRhythmn[] =
 // int zeldaMelody[] = {g5, f5s, d5s, a5, g5s, e5, g5s, c5};
 int zeldaMelody[] = {g5, g5f, e5f, a4, a4f, e5, g5s, c6};
 
-int zeldaRhythmn[] = {1, 1, 1, 1, 1, 1, 1, 1};
+int zeldaRhythm[] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 const int lightBreakpoint = 400;
 const int heatBreakpoint = 10;
-const int alcoholBreakpoint = 500;
+const int alcoholBreakpoint = 800;
 
 // The code to the combination lock is 268.
 char* lockCode[] = {"..---", "-....", "---.."};
@@ -70,7 +80,7 @@ int solvedCount = 0;
 
 void playRickRoll() {
     for (int i = 0; i < sizeof(rickRollMelody) / sizeof(int); i++) {
-          int notelength = 100 * rickRollRhythmn[i];
+          int notelength = 100 * rickRollRhythm[i];
           if (rickRollMelody[i] > 0) {
             tone(9, rickRollMelody[i], notelength);
           }
@@ -82,9 +92,21 @@ void playRickRoll() {
 
 void playZelda() {
     for (int i = 0; i < sizeof(zeldaMelody) / sizeof(int); i++) {
-          int notelength = 150 * zeldaRhythmn[i];
+          int notelength = 150 * zeldaRhythm[i];
           if (zeldaMelody[i] > 0) {
             tone(9, zeldaMelody[i], notelength);
+          }
+
+      // Delay for the current note + the separation between notes.
+      delay(notelength + notelength * beatSeparation);
+    }
+}
+
+void playXp() {
+    for (int i = 0; i < sizeof(xpMelody) / sizeof(int); i++) {
+          int notelength = 150 * xpRhythm[i];
+          if (xpMelody[i] > 0) {
+            tone(9, xpMelody[i], notelength);
           }
 
       // Delay for the current note + the separation between notes.
@@ -96,18 +118,19 @@ void onSolved() {
     switch (++solvedCount) {
         case 1:
             digitalWrite(11, HIGH);
+            playZelda();
             break;
         case 2:
             digitalWrite(12, HIGH);
+            playZelda();
             break;
         case 3:
             digitalWrite(10, HIGH);
+            playRickRoll();
             break;
         default:
             break;
     }
-
-    playZelda();
 }
 
 void flashSequence() {
@@ -158,7 +181,7 @@ void setup() {
 
     delay(2000);
 
-    // playRickRoll();
+    playXp();
 
     initHeat = analogRead(A2);
 }
