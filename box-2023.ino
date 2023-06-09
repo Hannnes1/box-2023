@@ -184,6 +184,9 @@ void setup() {
     playXp();
 
     initHeat = analogRead(A2);
+    
+    // Delay for 20 s to avoid false positives from alcohol sensor.
+    delay(20000);
 }
 
 void loop() {
